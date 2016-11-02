@@ -108,11 +108,11 @@
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 	#				Optional - Print the random number.					#
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-	li	$v0, 1						# Service 1, print int
-	syscall							# Print previously generated random int
+	li	$v0, 1
+	syscall
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 	
-	mul	$a0, $a0, 10
+	mul	$a0, $a0, 10					# $a0 = $a0 * 10
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 	#			Optional - Lock the random number offset for testing.				#
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
@@ -239,7 +239,9 @@
 	la	$a0, enteredWord				# $a0 = enteredWord address
 	jal	wordToLowerCase					# $a0 = enteredWord
 	
-	#Print the result string to screen
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+	#				Optional - Print the entered word.					#
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 	li	$v0, 4
 	la	$a0, result
 	syscall
@@ -251,7 +253,7 @@
 	#Print a line return to screen
 	la	$a0, newLine
 	syscall
-	
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 	
 	la	$a1, enteredWord				# $a1 = enteredWord address
 	la	$a0, enteredWordSorted				# $a0 = enteredWordSorted address
@@ -260,35 +262,50 @@
 	la	$a0, enteredWordSorted				# $a0 = enteredWordSorted address
 	jal	enteredWordSort					# $a0 = enteredWordSorted
 	
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+	#				Optional - Print the sorted, entered word.				#
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 	li	$v0, 4
 	la	$a0, enteredWordSorted
 	syscall
 	la	$a0, newLine
 	syscall
-	
-	
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 	
 	la	$a0, enteredWordSorted				# $a0 = enteredWordSorted address
 	la	$a1, magicLetter				# $a1 = magicLetter address
 	jal	magicLetterCont					# a0 = enteredWordSorted; $a1 = magicLetter
 	
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+	#				Optional - Print the letter test result.				#
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 	move	$a0, $v0
 	li	$v0, 1
 	syscall
 	
+	li	$v0, 4
+	la	$a0, newLine
+	syscall
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 	
-		
 	la	$a0, enteredWordSorted				# $a0 = enteredWordSorted address
 	la	$a1, magicWordSorted				# $a1 = magicWordSorted address
 	jal	magicWordCont					# a0 = enteredWordSorted; $a1 = magicWordSorted
 	
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+	#				Optional - Print the word test result.					#
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 	move	$a0, $v0
 	li	$v0, 1
 	syscall
 	
+	li	$v0, 4
+	la	$a0, newLine
+	syscall
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 	
-	lb	$t1, magicLetter
-	sw	$t1, dictionaryName
+	lb	$t1, magicLetter				# $t1 = magicLetter
+	sw	$t1, dictionaryName				# dictionaryName = magicLetter
 	
 	# Open the file
 	li	$v0, 13						# Syscall for open file
@@ -313,101 +330,18 @@
 	move	$a0, $s6					# File descriptor to close
 	syscall							# Execute Syscall
 	
-	li	$v0, 4
-	la	$a0, newLine
-	syscall
+	
+	li	$v0, 10						# Syscall for terminate program
+	syscall							# Execute Syscall
 	
 	
-	li	$v0, 11
-	la	$s0, dictionary
-	addi	$s0, $s0, 600
-	lb	$a0, 0($s0)
-	addi	$s0, $s0, 1
-	syscall
-	
-	lb	$a0, 0($s0)
-	addi	$s0, $s0, 1
-	syscall
-	
-	lb	$a0, 0($s0)
-	addi	$s0, $s0, 1
-	syscall
-	
-	lb	$a0, 0($s0)
-	addi	$s0, $s0, 1
-	syscall
-	
-	lb	$a0, 0($s0)
-	addi	$s0, $s0, 1
-	syscall
-	
-	lb	$a0, 0($s0)
-	addi	$s0, $s0, 1
-	syscall
-	
-	lb	$a0, 0($s0)
-	addi	$s0, $s0, 1
-	syscall
-	
-	lb	$a0, 0($s0)
-	addi	$s0, $s0, 1
-	syscall
-	
-	lb	$a0, 0($s0)
-	addi	$s0, $s0, 1
-	syscall
-	
-	lb	$a0, 0($s0)
-	addi	$s0, $s0, 1
-	syscall
-	
-	lb	$a0, 0($s0)
-	addi	$s0, $s0, 1
-	syscall
-	
-	lb	$a0, 0($s0)
-	addi	$s0, $s0, 1
-	syscall
-	
-	lb	$a0, 0($s0)
-	addi	$s0, $s0, 1
-	syscall
-	
-	lb	$a0, 0($s0)
-	addi	$s0, $s0, 1
-	syscall
-	
-	lb	$a0, 0($s0)
-	addi	$s0, $s0, 1
-	syscall
-	
-	lb	$a0, 0($s0)
-	addi	$s0, $s0, 1
-	syscall
-	
-	lb	$a0, 0($s0)
-	addi	$s0, $s0, 1
-	syscall
-	
-	lb	$a0, 0($s0)
-	addi	$s0, $s0, 1
-	syscall
-	
-	lb	$a0, 0($s0)
-	addi	$s0, $s0, 1
-	syscall
-	
-	
-	
-	
-	
-	
-	li	$v0, 10
-	syscall
-	
-	
+
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 #					strCpy Procedure						#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#	This procedure takes two addresses, the source address in $a1, and the destination in $a0. 	#
+#	The content of the source address is copied, biy by bit, to the destination address. The copy	#
+#	process completes when either a new line character (10) or the null character (0) is found.	#
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 strCpy:
 	addi	$sp, $sp, -12				# Move the stack pointer to allocate space
@@ -436,10 +370,14 @@ strCpy.End:
 	
 	# Return to the caller.
 	jr	$ra					# Set PC = $ra
-	
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 #					magicWordSort Procedure						#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#	This procedure takes one address in $a0. The content of the source address is ordered		#
+#	alphabetically, character by character and must be nine characters in length.			#
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 magicWordSort:						# a0 = magicWordSorted
 	addi	$sp, $sp, -8				# Move the stack pointer to allocate space
@@ -476,10 +414,15 @@ magicWordSort.End:
 	
 	# Return to the caller.
 	jr	$ra					# Set PC = $ra
-	
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 #					enteredWordSort Procedure					#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#	This procedure takes one address in $a0. The procedure calls the strLen function to obtain the	#
+#	character length of the content. The content of the source address is ordered alphabetically,	#
+#	character by character, dynamically.								#
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 enteredWordSort:					# a0 = enteredWordSorted
 	addi	$sp, $sp, -8				# Move the stack pointer to allocate space
@@ -520,10 +463,16 @@ enteredWordSort.End:
 	
 	# Return to the caller.
 	jr	$ra					# Set PC = $ra
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 #					wordToLowerCase procedure					#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#	This procedure takes one address in $a0. The procedure checks each character to see if it falls	#
+#	within the range of lower case ascii characters (97 - 122) and adds 32 to any character outside	#
+#	of that range. The copy	conversion process completes when either a new line character (10) or	#
+#	the null character (0) is found.								#
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 wordToLowerCase:
 	addi	$sp, $sp, -8				# Move the stack pointer to allocate space
@@ -551,9 +500,16 @@ wordToLowerCase.End:
 	
 	# Return to the caller.
 	jr	$ra					# Set PC = $ra
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 #					magicLetterCont Function					#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#	This function takes two addresses, the address of a sorted word in $a0, and the address of a	#
+#	key letter in $a1. The function calls the strLen function to obtain the sorted word string	#
+#	length and iterates through the sorted word to check for the key letter. A 1 is returned if the	#
+#	key letter is found. Otherwise, 0 is returned.							#
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 magicLetterCont:					# a0 = enteredWordSorted; $a1 = magicLetter
 	addi	$sp, $sp, -12				# Move the stack pointer to allocate space
@@ -570,13 +526,13 @@ magicLetterCont:					# a0 = enteredWordSorted; $a1 = magicLetter
 	li	$v0, 0					# $v0 = 0
 	
 magicLetterCont.Loop:
-	lb	$s2, 0($s0)
-	beqz	$s2, magicLetterCont.End
-	seq	$v0, $s1, $s2
-	beq	$v0, 1, magicLetterCont.End
-	addi	$s4, $s4, 1
-	addi	$s0, $s0, 1
-	j	magicLetterCont.Loop
+	lb	$s2, 0($s0)				# $s2 = 0($s0)
+	beqz	$s2, magicLetterCont.End		# If($s2 == 0) branch to magicLetterCont.End
+	seq	$v0, $s1, $s2				# $v0 = ($s1 == $s2 ? 1 : 0)
+	beq	$v0, 1, magicLetterCont.End		# If($v0 == 1) branch to magicLetterCont.End
+	addi	$s4, $s4, 1				# $s4++
+	addi	$s0, $s0, 1				# $s0++
+	j	magicLetterCont.Loop			# Jump to magicLetterCont.Loop
 	
 magicLetterCont.End:
 	lw	$ra, 0($sp)				# Restore $ra
@@ -586,9 +542,17 @@ magicLetterCont.End:
 	
 	# Return to the caller.
 	jr	$ra					# Set PC = $ra
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 #					magicWordCont Function						#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#	This function takes two addresses, the address of a sorted word in $a0, and the address of a	#
+#	sorted key word in $a1. The function calls the strLen function to obtain the sorted word string	#
+#	length and iterates through the sorted word and through the sorted key word to check for all	#
+#	letters of the sorted word within the sorted key word. A 1 is returned if all letters in the	#
+#	sorted word are found within the sorted key word. Otherwise, 0 is returned.			#
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 magicWordCont:						# a0 = enteredWordSorted; $a1 = magicWordSorted
 	addi	$sp, $sp, -12				# Move the stack pointer to allocate space
@@ -606,23 +570,22 @@ magicWordCont:						# a0 = enteredWordSorted; $a1 = magicWordSorted
 	addi	$s5, $zero, 9				# $s5 = string length (magicWord)
 	
 magicWordCont.Loop:
-	lb	$t0, 0($s0)
-	lb	$t1, 0($s1)
-	seq	$v0, $t0, 0
-	beq	$v0, 1, magicWordCont.End
-	beqz	$t1, magicWordCont.End
-	bne	$t0, $t1, magicWordCont.NoLetter
+	lb	$t0, 0($s0)				# $t0 = 0($s0)
+	lb	$t1, 0($s1)				# $t1 = 0($s1)
+	seq	$v0, $t0, 0				# $v0 = ($t0 == 0 ? 1 : 0)
+	beq	$v0, 1, magicWordCont.End		# If($v0 == 1) branch to magicWordCont.End
+	beqz	$t1, magicWordCont.End			# If($t1 == 0) branch to magicWordCont.End
+	bne	$t0, $t1, magicWordCont.NoLetter	# If($t0 != $t1) branch to magicWordCont.NoLetter
 magicWordCont.HasLetter:
-	addi	$s0, $s0, 1
-	addi	$s1, $s1, 1
-	addi	$s2, $s2, 1
-	addi	$s3, $s3, 1
-	j	magicWordCont.Loop
+	addi	$s0, $s0, 1				# $s0++
+	addi	$s1, $s1, 1				# $s1++
+	addi	$s2, $s2, 1				# $s2++
+	addi	$s3, $s3, 1				# $s3++
+	j	magicWordCont.Loop			# Jump to magicWordCont.Loop
 magicWordCont.NoLetter:
-	addi	$s1, $s1, 1
-	addi	$s3, $s3, 1
-#	ble	$s3, $s5, magicWordCont.Loop
-	j	magicWordCont.Loop
+	addi	$s1, $s1, 1				# $s1++
+	addi	$s3, $s3, 1				# $s3++
+	j	magicWordCont.Loop			# Jump to magicWordCont.Loop
 	
 magicWordCont.End:
 	lw	$ra, 0($sp)				# Restore $ra
@@ -632,9 +595,15 @@ magicWordCont.End:
 	
 	# Return to the caller.
 	jr	$ra					# Set PC = $ra
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 #					strLen Function							#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#	This function takes the address of a string in $a0 and iterates through the string to obtain	#
+#	length of the string. The function completes when either the new line character (10) or the	#
+#	null terminator character (0) is found. The integer length of the string is returned.		#
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 strLen:
 	addi	$sp, $sp, -8				# Move the stack pointer to allocate space
@@ -658,9 +627,4 @@ strLen.Exit:
 	
 	# Return to the caller.
 	jr	$ra					# Set PC = $ra
-	
-	
-	# Open a text file by letter.
-	# Store the words.
-	# Close the text file.
-	
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
