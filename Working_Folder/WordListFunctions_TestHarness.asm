@@ -137,6 +137,18 @@ main:
 	syscall
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 	
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+	#				Optional - Print the correct word list.					#
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+	li	$v0, 4
+	la	$a0, dictionaryMatches
+	syscall
+	
+	#Print a line return to screen
+	la	$a0, newLine
+	syscall
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+	
 	#Print the entry prompt to screen
 	li	$v0, 4						# Setup string print to screen
 	la	$a0, prompt					# Print this string
@@ -149,7 +161,37 @@ main:
 	syscall							# Execute
 	
 	la	$a0, enteredWord				# $a0 = enteredWord address
-	jal	wordToLowerCase					# $a0 = enteredWord
+	jal	checkWord					# $a0 = enteredWord
+	
+	
+	#Print the entry prompt to screen
+	li	$v0, 4						# Setup string print to screen
+	la	$a0, prompt					# Print this string
+	syscall							# Execute
+	
+	#Read in an entered string
+	li	$v0, 8						# Setup read string
+	la	$a0, enteredWord				# Load byte space into address
+	li	$a1, 10						# Allot the byte space for string
+	syscall							# Execute
+	
+	la	$a0, enteredWord				# $a0 = enteredWord address
+	jal	checkWord					# $a0 = enteredWord
+	
+	
+	#Print the entry prompt to screen
+	li	$v0, 4						# Setup string print to screen
+	la	$a0, prompt					# Print this string
+	syscall							# Execute
+	
+	#Read in an entered string
+	li	$v0, 8						# Setup read string
+	la	$a0, enteredWord				# Load byte space into address
+	li	$a1, 10						# Allot the byte space for string
+	syscall							# Execute
+	
+	la	$a0, enteredWord				# $a0 = enteredWord address
+	jal	checkWord					# $a0 = enteredWord
 	
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 	#				Optional - Print the entered word.					#
@@ -217,9 +259,18 @@ main:
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 	
 	
+#	#Print the correct word list to screen
+#	li	$v0, 4
+#	la	$a0, dictionaryMatches
+#	syscall
+#	
+#	#Print a line return to screen
+#	la	$a0, newLine
+#	syscall
+	
 	#Print the correct word list to screen
 	li	$v0, 4
-	la	$a0, dictionaryMatches
+	la	$a0, givenMatches
 	syscall
 	
 	#Print a line return to screen
