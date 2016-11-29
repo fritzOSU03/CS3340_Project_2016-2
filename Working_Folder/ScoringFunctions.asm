@@ -25,9 +25,8 @@ getScore:
 #	a correct answer; it will increase their score
 #	based off how long their word is. i.e: 4-letter word
 #	gives 4 points, etc.
-#	It also makes use of James's strLen function from his
-#	wordListFunction file, but I've renamed it just to length
-#	for ease when all files are included in our interface.
+#	It also makes use of the strLen function located in
+#	StringFunctions.asm.
 #
 incrementScore:
 	addi	$sp, $sp, -8			# Move the stack pointer to allocate space
@@ -35,7 +34,7 @@ incrementScore:
 	sw	$ra, 0($sp)			# Store $ra on the stack
 	
 	add	$t0, $a0, $zero			# $t0 = Address of enteredWord
-	jal	length				# Call the length function
+	jal	strLen				# Call the length function
 	
 	lw	$t1, score			# Load what is in the score variable
 	add	$t2, $v0, $zero			# Move the strLen return into $t2
@@ -47,33 +46,3 @@ incrementScore:
 	addi	$sp, $sp, 8			# Restore the stack pointer
 	
 	jr	$ra				# Return to caller
-
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-#					length Function							#
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-#	This function takes the address of a string in $a0 and iterates through the string to obtain	#
-#	length of the string. The function completes when either the new line character (10) or the	#
-#	null terminator character (0) is found. The integer length of the string is returned.		#
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-length:
-	addi	$sp, $sp, -8			# Move the stack pointer to allocate space
-	sw	$a0, 4($sp)			# Store $a0 on the stack
-	add	$t0, $a0, $zero			# $t0 = enteredWord
-	sw	$ra, 0($sp)			# Store $ra on the stack
-	li	$t2, 0				# Initialize the counter to zero
-length.Loop:
-	lb	$t1, 0($t0)			# Load the next character into t1
-	beqz	$t1, length.Exit		# Check for the null character
-	beq	$t1, 10, length.Exit		# Check for the line feed character
-	addi	$t0, $t0, 1			# Increment the string pointer
-	addi	$t2, $t2, 1			# Increment the counter
-	j	length.Loop			# Return to the top of the loop
-length.Exit:
-	add	$v0, $t2, $zero			# Move the count to $v0
-	lw	$ra, 0($sp)			# Restore $ra
-	lw	$a0, 4($sp)			# Restore $a0
-	addi	$sp, $sp, 8			# Restore the stack pointer
-	
-	jr	$ra				# Set PC = $ra
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
