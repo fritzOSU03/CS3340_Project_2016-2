@@ -16,14 +16,15 @@
 	
 	prompt:			.asciiz "Please enter a word: "
 	result:			.asciiz "The entered word is: "
-	
+	scoreS:			.asciiz "Your score is: "
 
 .text
 
 	.globl main
 	
 	.include "WordListFunctions.asm"
-
+	
+	
 main:
 	jal	SetupWordFunctions
 	
@@ -276,6 +277,20 @@ main:
 	#Print a line return to screen
 	la	$a0, newLine
 	syscall
+	
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+	#				  Optional - Print the final score.					#
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+	li	$v0, 4
+	la	$a0, scoreS
+	syscall
+	li	$v0, 1
+	lw	$a0, score
+	syscall
+	li	$v0, 4
+	la	$a0, newLine
+	syscall
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 		
 	
 	li	$v0, 10					# Syscall for terminate program
