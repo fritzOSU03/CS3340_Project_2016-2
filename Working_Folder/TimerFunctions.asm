@@ -2,7 +2,7 @@
 	timer:		.word	0
 	startTime:	.word	0
 	currentTime:	.word	0
-	
+
 .text
 
 #
@@ -80,7 +80,6 @@ getTimeRemaining:
 	subu	$s2, $s1, $s0				# Subtracting the initial time from the current time
 	
 	sub	$s6, $s6, $s2				# Subtract how much time has passed from the original timer
-	sw	$s6, timer				# Update the timer variable
 	add	$v0, $zero, $s6				# $v0 = time remaining in ms
 	
 	lw	$ra, 0($sp)				# Restore $ra
@@ -90,7 +89,7 @@ getTimeRemaining:
 	lw	$s6, 16($sp)				# Restore $s6
 	addi	$sp, $sp, 20				# Restore the stack pointer
 	
-	jr	$ra
+	jr	$ra					# Return to caller
 
 
 #
@@ -106,18 +105,19 @@ incrementTimer:
 	sw	$ra, 0($sp)				# Store $ra on the stack
 	
 	jal	setCurrentTime				# Update the currentTime value
-	lw	$s0, startTime				# $s0 = (startTime)
-	lw	$s1, currentTime			# $s1 = (currentTime)
 	lw	$s6, timer				# $s6 = (timer)
+	lw	$s1, currentTime			# $s1 = (currentTime)
+	lw	$s0, startTime				# $s0 = (startTime)
 	
-	subu	$s2, $s1, $s0				# Subtract initial time from current time
-	sub	$s6, $s6, $s2				# Subtract how much time has passed from the original timer
-	blez	$s6, incrementTimer.NoTime
-	addi	$s6, $s6, 20000				# Add 20 seconds to the timer
+	sub	$s2, $s1, $s0				# $s2 = elapsed time
+	ble	$s6, $s2, incrementTimer.NoTime		# If(timer<=elapsed time) branch to incrementTimer.NoTime
+	addi	$s6, $s6, 20000				# timer += 20 seconds
+	sw	$s6, timer				# Store new timer value
+	sub	$v0, $s6, $s2				# $v0 = timer - time elapsed
+	j	incrementTimer.End			# Jump to incrementTimer.End
 incrementTimer.NoTime:
-	sw	$s6, timer				# Update the timer variable
-	sub	$v0, $s6, $s2				# $v0 = timer - elapsed time = time remaining
-
+	sw	$zero, timer				# Update the timer variable
+	li	$v0, 0					# $v0 = 0
 incrementTimer.End:
 	lw	$ra, 0($sp)				# Restore $ra
 	lw	$s0, 4($sp)				# Restore $s0
