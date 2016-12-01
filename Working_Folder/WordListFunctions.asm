@@ -17,14 +17,17 @@
 	dictionaryWords:	.word	0
 	rdmWrdOfst:		.word	0
 	
-	badEntryWordDict:	.asciiz	"This word is not in the list of correct answers. Please try again.\n"
-	badEntryWordDupl:	.asciiz	"You've already entered this word. Please try again.\n"
-	goodEntryWord:		.asciiz	"Correct word entry!\n"
+	newLine:		.asciiz	"\n"
+	badEntryWordDict:	.asciiz	"\nThis word is not in the list of correct answers. Please try again.\n"
+	badEntryWordDupl:	.asciiz	"\nYou've already entered this word. Please try again.\n"
+	goodEntryWord:		.asciiz	"\nCorrect word entry!\n"
+	scoreS:			.asciiz "Your score is: "
+	timeS:			.asciiz "Your time remaining is: "
+	outOfTime:		.asciiz	"You are out of time!\n"
 	
 .text
 	.include "TimerFunctions.asm"
 	.include "ScoringFunctions.asm"
-	.include "Variables.asm"
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 #				  SetupWordFunctions Procedure						#
@@ -78,6 +81,12 @@ SetupMagicWord:
 	lw	$a1, wordsRead				# And <= wordsRead
 	addi	$a1, $a1, -1				# Decrement $a1
 	syscall						# Generate random int (returns in $a0)
+	
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#			 Use this section to lock the magic word for testing.				#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#	li	$a0, 2207				# Sets magicWord = computers			#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 	
 	# Multiply the random number by 10 for the byte offset
 	mul	$a0, $a0, 10				# $a0 = $a0 * 10
@@ -141,8 +150,15 @@ SetupValidWordList:
 	la	$a2, dictionaryMatches			# $a2 = dictionaryMatches;
 	jal	setupDictionary				# Call setupDictionary procedure
 	
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#			 Use this section to correct entries for testing.				#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#	li	$v0, 4											#
+#	la	$a0, dictionaryMatches									#
+#	syscall												#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+
 SetupWordFunctions.End:
-	jal	setInitialTime				# Setup and Start the timer
 	jal	resetScore				# Reset the score to zero
 	lw	$ra, 0($sp)				# Restore $ra
 	lw	$a0, 4($sp)				# Restore $a0
@@ -174,6 +190,9 @@ checkWord:
 	
 	jal	wordToLowerCase				# Call wordToLowerCase procedure
 	add	$s0, $zero, $a0				# $s0 = Address of enteredWord
+	#Check time remaining
+	jal	getTimeRemaining			# Call getTimeRemaining
+	blez	$v0, checkWord.OutOfTime		# If(time remaining <= 0) branch to checkWord.OutOfTime
 	# Check for word in dictionaryMatches
 	la	$a1, dictionaryMatches			# $a1 = Address of dictionaryMatches
 	jal	strContains				# Call strContains function
@@ -183,8 +202,12 @@ checkWord:
 	li	$v0, 4					# Load syscall print string function
 	la	$a0, badEntryWordDict			# Load address of string to print
 	syscall						# Execute syscall
+	#	get time remaining
+	jal	getTimeRemaining			# Call getTimeRemaining
+	add	$s4, $v0, $zero				# Same time (ms) remaining
+	divu	$s4, $s4, 1000				# Convert time to seconds
 	#	Go to Finish
-	j	checkWord.End				# Jump to checkWord.End
+	j	checkWord.ShowInfo			# Jump to checkWord.ShowInfo
 checkWord.InDictionary:
 	# Check for word not in givenMatches
 	la	$a1, givenMatches			# $a1 = Address of givenMatches
@@ -195,8 +218,12 @@ checkWord.InDictionary:
 	li	$v0, 4					# Load syscall print string function
 	la	$a0, badEntryWordDupl			# Load address of string to print
 	syscall						# Execute syscall
+	#	get time remaining
+	jal	getTimeRemaining			# Call getTimeRemaining
+	add	$s4, $v0, $zero				# Same time (ms) remaining
+	divu	$s4, $s4, 1000				# Convert time to seconds
 	#	Go to Finish
-	j	checkWord.End				# Jump to checkWord.End
+	j	checkWord.ShowInfo			# Jump to checkWord.ShowInfo
 	# Else
 checkWord.NotInEntries:
 	#	add word to givenmatches
@@ -207,12 +234,40 @@ checkWord.NotInEntries:
 	jal	strCpyNewLine				# Call strCpyNewLine
 	#	increment timer
 	jal	incrementTimer				# Call incrementTimer
+	add	$s4, $v0, $zero				# Same time (ms) remaining
+	divu	$s4, $s4, 1000				# Convert time to seconds
 	#	increment score
 	add	$a0, $s0, $zero				# $a0 = word string length
 	jal	incrementScore				# Call incrementScore
 	#	Show valid entry message
 	li	$v0, 4					# Load syscall print string function
 	la	$a0, goodEntryWord			# Load address of string to print
+	syscall						# Execute syscall
+	j	checkWord.ShowInfo			# Jump to checkWord.ShowInfo
+checkWord.OutOfTime:
+	li	$v0, 4					# Load syscall print string function
+	la	$a0, outOfTime				# Load address of string to print
+	syscall						# Execute syscall
+	j	checkWord.End
+checkWord.ShowInfo:
+	#	Show current score
+	li	$v0, 4					# Load syscall print string function
+	la	$a0, scoreS				# Load address of string to print
+	syscall						# Execute syscall
+	li	$v0, 1					# Load syscall print integer function
+	lw	$a0, score				# Load integer to print
+	syscall						# Execute syscall
+	li	$v0, 4					# Load syscall print string function
+	la	$a0, newLine				# Load address of string to print
+	syscall						# Execute syscall
+	#	Show time remaining
+	la	$a0, timeS				# Load address of string to print
+	syscall						# Execute syscall
+	li	$v0, 1					# Load syscall print integer function
+	add	$a0, $s4, $zero				# $a0 = time in seconds
+	syscall						# Execute syscall
+	li	$v0, 4					# Load syscall print string function
+	la	$a0, newLine				# Load address of string to print
 	syscall						# Execute syscall
 	#	Go to Finish
 	j	checkWord.End				# Jump to checkWord.End
